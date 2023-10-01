@@ -1,0 +1,18 @@
+stages:
+  - deploy
+
+docker_deploy:
+  image: docker:20.10.16
+  services:
+    - name: docker:20.10.16-dind
+      alias: docker
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""  # This disables TLS for simplicity
+  stage: deploy
+  script:
+    - docker login -u sahalghafur -p E7BC7BWEr5TpqTj
+    - docker build -t sahalghafur/pm-clarify:latest .
+    - docker push sahalghafur/pm-clarify:latest;
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "main"'
