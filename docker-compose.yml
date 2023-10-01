@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  pm-clarify:
+    image: docker.io/sahalghafur/pm-clarify:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - CONSUL_AGENT_ADDRESS=consul
+      - CONSUL_PORT=8500
+      - MARIADB_HOST=mariadb
+    depends_on:
+      - consul
+
+  consul:
+    image: consul:1.5.0
+    ports:
+      - "8500:8500"
+
+  mariadb:
+    image: mariadb:10.4
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_USER: processmanager
+      MYSQL_PASSWORD: processmanagerneedsapasswordfordb
+      MYSQL_DATABASE: processmanagerDB
+    healthcheck:
+      test: ["CMD", "mysql", "-u", "root", "-proot", "-e", "SHOW databases;"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
