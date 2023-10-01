@@ -9,6 +9,7 @@ urlpatterns = [
     path('health/', consul_views.health_check, name='health_check'),
     path('image-reader/', ocr_views.classify_image, name='classify'),
     path('image-extractor/', ocr_views.classify_image_doc, name='classify_image'),
+    path('image-validate/', ocr_views.image_validator, name='validate_image'),
     path('define-document/', ocr_views.define_document),
     path('documents/', ocr_views.get_all_documents)
 ]

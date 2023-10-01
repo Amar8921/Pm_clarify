@@ -101,3 +101,48 @@ def classify_image_doc(request):  # doc_name e.g. 'pan-card'
 
     else:
         return JsonResponse({"status": "error", "message": "Method not allowed."}, status=405)
+
+
+@csrf_exempt
+def image_validator(request):
+    if request.method == 'POST':
+        if 'image' not in request.FILES:
+            return JsonResponse({"status": "error", "message": "Image missing."}, status=400)
+
+        doc_name = request.POST.get('doc_name', None)
+        if not doc_name:
+            return JsonResponse({"status": "error", "message": "Document name (doc_name) missing in form data."}, status=400)
+        
+        image_file = request.FILES['image']
+        image_for_ocr = Image.open(image_file)
+
+        extracted_text = pytesseract.image_to_string(image_for_ocr)
+        print(extracted_text)
+
+        # Retrieve the details to extract for the given document type from your database
+        try:
+            document = DocumentDefinition.objects.get(name=doc_name)
+            details_to_extract = document.details
+        except DocumentDefinition.DoesNotExist:
+            return JsonResponse({"status": "error", "message": f"No document definition found for {doc_name}."}, status=404)
+        
+        # Check if details are present in the OCR extracted text
+        missing_details = []
+        for detail in details_to_extract:
+            if re.search(rf"{re.escape(detail)}", extracted_text, re.IGNORECASE) is None:
+                missing_details.append(detail)
+
+        if missing_details:
+            return JsonResponse({
+                "status": "error",
+                "message": "Some details are missing from the document.",
+                "missing_details": missing_details
+            }, status=400)
+        else:
+            return JsonResponse({
+                "status": "success",
+                "message": "All required details are present."
+            }, status=200)
+
+    else:
+        return JsonResponse({"status": "error", "message": "Method not allowed."}, status=405)
