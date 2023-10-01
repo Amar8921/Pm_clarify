@@ -117,6 +117,7 @@ def image_validator(request):
         image_for_ocr = Image.open(image_file)
 
         extracted_text = pytesseract.image_to_string(image_for_ocr)
+        print(extracted_text)
 
         # Retrieve the details to extract for the given document type from your database
         try:
