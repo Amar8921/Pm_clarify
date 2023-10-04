@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "Waiting a bit before running migrations..."
-sleep 10  # Adjust the sleep duration if needed
+sleep 200  # Adjust the sleep duration if needed
 
 echo "Running migrations..."
 python manage.py makemigrations
