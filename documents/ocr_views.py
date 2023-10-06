@@ -13,6 +13,7 @@ def define_document(request):
     try:
         data = json.loads(request.body)
         name = data['name']
+        document_name = data['document_name']
         details = data['details']
 
         # Check if a document with the given name already exists
@@ -22,7 +23,7 @@ def define_document(request):
                 "message": "A document with this name already exists."
             }, status=400)
 
-        document_def = DocumentDefinition(name=name, details=details)
+        document_def = DocumentDefinition(name=name,document_name=document_name,details=details)
         document_def.save()
 
         return JsonResponse({'status': 'success', 'message': 'Document details saved successfully.'})
