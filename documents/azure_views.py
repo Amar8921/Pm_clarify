@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from documents.models import DocumentDefinition
 from django.http import JsonResponse
+import json
 
 import os
 
@@ -19,12 +20,15 @@ from io import BytesIO
 def azure_id_card_analysis(request):
     image_content = None
 
+    # Get JSON data from POST request
+    body = json.loads(request.body.decode('utf-8'))
+
     if 'image' in request.FILES:
         image_file = request.FILES['image']
         image_content = image_file.read()
 
-    elif 'url' in request.POST:
-        image_url = request.POST['url']
+    elif 'url' in body:  # Check the URL from raw JSON data
+        image_url = body['url']
         response = requests.get(image_url)
         response.raise_for_status()
         image_content = response.content
