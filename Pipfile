@@ -9,6 +9,7 @@ django-admin = "*"
 pillow = "*"
 pytesseract = "*"
 gunicorn = "*"
+azure-ai-formrecognizer = "*"
 
 [dev-packages]
 
