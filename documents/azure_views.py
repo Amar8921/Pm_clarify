@@ -9,8 +9,8 @@ import json
 import os
 
 # Set Azure Key and Endpoint using environment variables or directly here
-FR_KEY = "2e2ea4d11d49496ead5ef373f28166fc"
-FR_ENDPOINT = "https://documentintelligenceinstancepmclarify.cognitiveservices.azure.com/"
+FR_KEY = "ade29cccc39749fa9e491f91d0e06fad"
+FR_ENDPOINT = "https://processpilotaivalidator.cognitiveservices.azure.com/"
 
 import requests
 from io import BytesIO
