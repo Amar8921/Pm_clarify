@@ -22,18 +22,24 @@ from io import BytesIO
 def azure_id_card_analysis(request):
     image_content = None
 
-    # Get JSON data from POST request
-    body = json.loads(request.body.decode('utf-8'))
-
+    # Check if the request contains a file
     if 'image' in request.FILES:
         image_file = request.FILES['image']
         image_content = image_file.read()
 
-    elif 'url' in body:  # Check the URL from raw JSON data
-        image_url = body['url']
-        response = requests.get(image_url)
-        response.raise_for_status()
-        image_content = response.content
+    # If no file, check for JSON data
+    elif request.content_type == 'application/json':
+        try:
+            body = json.loads(request.body.decode('utf-8'))
+            if 'url' in body:
+                image_url = body['url']
+                response = requests.get(image_url)
+                response.raise_for_status()
+                image_content = response.content
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "Invalid JSON."}, status=400)
+        except UnicodeDecodeError:
+            return JsonResponse({"status": "error", "message": "Invalid UTF-8 data."}, status=400)
 
     if not image_content:
         return JsonResponse({"status": "error", "message": "Image or URL missing."}, status=400)
