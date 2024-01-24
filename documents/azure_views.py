@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from datetime import datetime
 from django.http import JsonResponse, HttpResponseNotFound
-import json, logging, re
+import json, logging, re, magic
 
 import os
 
@@ -22,9 +22,27 @@ from io import BytesIO
 def azure_id_card_analysis(request):
     image_content = None
 
+    # Define allowed content types
+    allowed_content_types = [
+        'application/pdf',      # PDF
+        'image/jpeg',           # JPEG
+        'image/png',            # PNG
+        'image/bmp',            # BMP
+        'image/tiff',           # TIFF
+        'image/heif',           # HEIF
+    ]
+
     # Check if the request contains a file
     if 'image' in request.FILES:
         image_file = request.FILES['image']
+        # Determine the file's content type
+        file_content_type = magic.from_buffer(image_file.read(1024), mime=True)
+        image_file.seek(0)  # Reset file pointer after reading
+
+        # Check if the file's content type is allowed
+        if file_content_type not in allowed_content_types:
+            return JsonResponse({"status": "error", "message": "Unsupported file type."}, status=400)
+
         image_content = image_file.read()
 
     # If no file, check for JSON data

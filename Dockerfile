@@ -8,7 +8,7 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y gcc libffi-dev
+RUN apt-get update && apt-get install -y gcc libffi-dev libmagic1
 
 # Assuming you're using a Debian/Ubuntu-based image like python:3.9-slim
 RUN apt-get update && \

@@ -28,6 +28,7 @@ protobuf==4.21.12
 pytesseract==0.3.10
 python-consul==1.1.0
 python-dateutil==2.8.2
+python-magic==0.4.27
 pytz==2023.3
 PyYAML==6.0.1
 requests==2.31.0
