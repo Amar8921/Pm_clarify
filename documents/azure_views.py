@@ -82,6 +82,10 @@ def azure_id_card_analysis(request):
                     "value": field.value,
                     "confidence": field.confidence
                 }
+    
+    # Check if results dictionary is empty
+    if not results:
+        return JsonResponse({"status": "error", "message": "ID document not clear, upload again"}, status=400)
 
     return JsonResponse({
         "status": "success",
